@@ -1,0 +1,105 @@
+name: "\U0001F465 New Group / Role Request"
+description: Request a new group or role for an existing application
+labels: ["group-role"]
+title: "[Group/Role] {App Name} | {Environment}"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## New Group / Role Request
+        Request a new group or role to be added to an existing application.
+        
+        > **Naming conventions:** Please follow the [group naming conventions](https://git.cglcloud.com/CIAM/Issues/wiki/Group-Management#naming-conventions).
+
+  # ── Application Context ─────────────────────────────────────────────
+  - type: checkboxes
+    id: environments
+    attributes:
+      label: Environment(s)
+      description: Which environment(s) should this group/role be created in?
+      options:
+        - label: PROD
+        - label: STAGE
+        - label: DEV
+        - label: QA
+    validations:
+      required: true
+
+  - type: input
+    id: application_name
+    attributes:
+      label: Application Name
+      placeholder: "e.g. MyApp Portal"
+    validations:
+      required: true
+
+  - type: input
+    id: client_id
+    attributes:
+      label: Client ID
+      description: The Okta Client ID of the existing application
+      placeholder: "e.g. 0oa1abc2def3ghi4j5k6"
+    validations:
+      required: true
+
+  # ── Group Details ───────────────────────────────────────────────────
+  - type: input
+    id: group_name
+    attributes:
+      label: Group / Role Name
+      description: |
+        Follow the [naming conventions](https://git.cglcloud.com/CIAM/Issues/wiki/Group-Management#naming-conventions). 
+        Format: `APPNAME_ROLENAME`
+      placeholder: "e.g. MYAPP_ADMIN"
+    validations:
+      required: true
+
+  - type: textarea
+    id: group_description
+    attributes:
+      label: Group / Role Description
+      description: What access or permissions does this group/role grant?
+      placeholder: "e.g. Grants administrator access to the MyApp management console"
+    validations:
+      required: true
+
+  # ── Entitlements ────────────────────────────────────────────────────
+  - type: dropdown
+    id: has_entitlements
+    attributes:
+      label: Does this group require entitlements?
+      description: |
+        Entitlements define fine-grained permissions within the group. 
+        See [Identity Getting Started](https://wiki.cglcloud.com/index.php/MyCargill_Identity_Getting_Started) for details.
+      options:
+        - "No — Simple group membership is sufficient"
+        - "Yes — Need to define specific entitlements"
+        - "Not sure — Need guidance"
+    validations:
+      required: true
+
+  - type: textarea
+    id: entitlement_details
+    attributes:
+      label: Entitlement Details (if applicable)
+      description: List the entitlements needed for this group
+      placeholder: |
+        Entitlement Name: MYAPP_MANAGE_USERS
+        Description: Ability to create and modify users within MyApp
+        
+        Entitlement Name: MYAPP_VIEW_REPORTS 
+        Description: Read-only access to reporting dashboards
+
+  # ── Service Account ─────────────────────────────────────────────────
+  - type: input
+    id: service_account_email
+    attributes:
+      label: Service Account Email (if applicable)
+      description: If this group should be accessible via a service account
+      placeholder: "e.g. svc-myapp@company.com"
+
+  - type: textarea
+    id: additional_context
+    attributes:
+      label: Additional Context
+      description: Any other information about this group/role request

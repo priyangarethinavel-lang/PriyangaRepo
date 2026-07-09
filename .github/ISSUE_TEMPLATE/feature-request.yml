@@ -1,0 +1,97 @@
+name: "\U0001F680 Feature Request"
+description: Suggest an enhancement or new feature for a CIAM service
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Feature Request
+        Help us understand the problem you're trying to solve and how a new feature would help.
+
+  # ── Context ──────────────────────────────────────────────────────────
+  - type: dropdown
+    id: service
+    attributes:
+      label: Target Service(s)
+      description: Which CIAM service(s) would this feature be for? Select all that apply.
+      multiple: true
+      options:
+        - User Services
+        - Okta
+        - Identity Portal
+        - Platform-wide
+        - Not Sure
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Business Priority
+      description: How important is this for your team?
+      options:
+        - Critical — Blocking a project or release
+        - High — Significant business value, needed soon
+        - Medium — Would improve workflows, can wait
+        - Low — Nice to have
+    validations:
+      required: true
+
+  # ── Request ──────────────────────────────────────────────────────────
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Statement
+      description: What problem does this feature solve? What pain point does your team experience today?
+      placeholder: |
+        Example: Currently, when we need to bulk-load users into our application, 
+        we have to submit individual requests for each user. With 500+ users to onboard, 
+        this takes days and is error-prone.
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: How would you like this to work? Describe your ideal solution.
+      placeholder: |
+        Example: A bulk upload endpoint or CSV import feature that allows us to 
+        submit a file with user details and have them provisioned automatically.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: What alternatives or workarounds have you considered?
+      placeholder: |
+        Example: We tried scripting individual API calls, but it's slow and 
+        hits rate limits. We also considered using Okta's import directly, 
+        but we need the User Service layer for our custom attributes.
+
+  # ── Impact ───────────────────────────────────────────────────────────
+  - type: dropdown
+    id: user_impact
+    attributes:
+      label: Who Would Benefit?
+      description: How broad is the impact of this feature?
+      options:
+        - Just my team / application
+        - Multiple teams / applications
+        - All CIAM platform users
+        - External users / customers
+
+  - type: input
+    id: target_date
+    attributes:
+      label: Target Date (if any)
+      description: Is there a deadline or release this is tied to?
+      placeholder: "e.g. Q2 2026, 'before April release', or 'no deadline'"
+
+  - type: textarea
+    id: additional_context
+    attributes:
+      label: Additional Context
+      description: Any mockups, diagrams, API specs, or reference implementations

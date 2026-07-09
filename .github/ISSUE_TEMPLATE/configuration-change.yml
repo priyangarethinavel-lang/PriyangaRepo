@@ -1,0 +1,108 @@
+name: "\U00002699\U0000FE0F Configuration Change"
+description: Request a change to an existing application's configuration
+labels: ["configuration-change"]
+title: "[Config] {Application Name}"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Configuration Change Request
+        Request an update to an existing application's CIAM configuration.
+
+  # ── Application Context ─────────────────────────────────────────────
+  - type: checkboxes
+    id: environments
+    attributes:
+      label: Environment(s)
+      description: Which environment(s) need this change?
+      options:
+        - label: DEV
+        - label: STAGE
+        - label: PROD
+        - label: QA
+    validations:
+      required: true
+
+  - type: input
+    id: application_name
+    attributes:
+      label: Application Name
+      placeholder: "e.g. MyApp Portal"
+    validations:
+      required: true
+
+  - type: input
+    id: client_id
+    attributes:
+      label: Client ID
+      description: The Okta Client ID of the application to be updated
+      placeholder: "e.g. 0oa1abc2def3ghi4j5k6"
+    validations:
+      required: true
+
+  # ── Change Details ──────────────────────────────────────────────────
+  - type: dropdown
+    id: change_type
+    attributes:
+      label: Type of Change
+      description: What type of configuration change is needed?
+      multiple: true
+      options:
+        - Redirect URIs (sign-in or sign-out)
+        - Scopes / Claims
+        - Groups / Roles
+        - Application Settings (name, logo, visibility)
+        - Token Configuration (lifetime, refresh policy)
+        - Grant Types
+        - CORS / Trusted Origins
+        - SAML Settings (SSO URL, audience, attributes)
+        - Service Account
+        - Identity Portal Settings
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: change_details
+    attributes:
+      label: Change Details
+      description: |
+        Describe the specific changes needed. For URI changes, list the exact values. 
+        For scope/claim changes, specify add or remove.
+      placeholder: |
+        **Add sign-in redirect URIs:**
+        - https://myapp-new.company.com/callback
+        
+        **Remove sign-in redirect URIs:**
+        - https://myapp-old.company.com/callback
+        
+        **Add scope:**
+        - custom:read
+    validations:
+      required: true
+
+  # ── Scheduling ──────────────────────────────────────────────────────
+  - type: dropdown
+    id: urgency
+    attributes:
+      label: Urgency
+      description: When does this change need to be applied?
+      options:
+        - Normal — Apply during regular business hours
+        - Urgent — Needed within 24 hours (blocking development/testing)
+        - Scheduled — Needs to be applied at a specific date/time
+    validations:
+      required: true
+
+  - type: input
+    id: scheduled_date
+    attributes:
+      label: Scheduled Date (if applicable)
+      description: When should this change be applied?
+      placeholder: "e.g. 2026-03-01, or 'before the March release'"
+
+  - type: textarea
+    id: additional_context
+    attributes:
+      label: Additional Context
+      description: Reason for the change, related tickets, or any other details

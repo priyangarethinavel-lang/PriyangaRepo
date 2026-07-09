@@ -1,0 +1,216 @@
+name: "\U0001F41E Bug Report"
+description: Report a bug or incident affecting a CIAM service
+labels: ["bug"]
+body:
+  # ── Context ──────────────────────────────────────────────────────────
+  - type: markdown
+    attributes:
+      value: |
+        ## Report a Bug or Incident
+        Help us diagnose the issue quickly by providing as much structured detail as possible.
+
+  - type: checkboxes
+    id: environments
+    attributes:
+      label: Environment(s)
+      description: Select all affected environments
+      options:
+        - label: PROD
+        - label: STAGE
+        - label: DEV
+        - label: QA
+    validations:
+      required: true
+
+  - type: dropdown
+    id: service
+    attributes:
+      label: Affected Service(s)
+      description: Which CIAM service(s) are involved? Select all that apply.
+      multiple: true
+      options:
+        - User Services
+        - Okta
+        - Identity Portal
+        - Not Sure
+    validations:
+      required: true
+
+  - type: input
+    id: application_name
+    attributes:
+      label: Application Name
+      description: The name of your application or project
+      placeholder: "e.g. MyApp Portal, GPS, MyCargill"
+    validations:
+      required: true
+
+  - type: input
+    id: client_id
+    attributes:
+      label: Client ID (if known)
+      description: The Okta Client ID associated with your application
+      placeholder: "e.g. 0oa1abc2def3ghi4j5k6"
+    validations:
+      required: false
+
+  # ── Problem ──────────────────────────────────────────────────────────
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the Bug
+      description: A clear description of what is happening
+      placeholder: |
+        Example: Users are seeing a "403 Forbidden" error when trying to activate their account 
+        through the Identity Portal. The activation email link redirects to an error page.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps_to_reproduce
+    attributes:
+      label: Steps to Reproduce
+      description: How can we reproduce this issue?
+      placeholder: |
+        1. User receives activation email
+        2. Clicks the activation link
+        3. Gets redirected to Identity Portal
+        4. Sees "Application Error" page
+    validations:
+      required: false
+
+  - type: textarea
+    id: expected_behavior
+    attributes:
+      label: Expected Behavior
+      description: What should happen instead?
+      placeholder: "User should be taken to the password creation page"
+    validations:
+      required: false
+
+  # ── Impact ───────────────────────────────────────────────────────────
+  - type: dropdown
+    id: impact_scope
+    attributes:
+      label: Impact Scope
+      description: How many users are affected?
+      options:
+        - Single user
+        - Multiple users (small group)
+        - Many users (large group or team)
+        - All users
+        - Not user-specific (system/configuration issue)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity / Business Impact
+      description: How severe is the impact on business operations?
+      options:
+        - Critical — Service is down or unusable, blocking business
+        - High — Major feature is broken, significant user impact
+        - Medium — Feature is degraded but workaround exists
+        - Low — Minor issue, cosmetic, or edge case
+    validations:
+      required: true
+
+  - type: dropdown
+    id: reproducibility
+    attributes:
+      label: Reproducibility
+      description: How consistently can the issue be reproduced?
+      options:
+        - Always — Happens every time
+        - Frequently — Happens most of the time
+        - Sometimes — Intermittent
+        - Rarely — Hard to reproduce
+        - Unable to reproduce — Happened once
+
+  - type: input
+    id: timeline
+    attributes:
+      label: When Did This Start?
+      description: Approximate date/time the issue was first observed
+      placeholder: "e.g. 2026-02-25 around 14:00 UTC, or 'since last week'"
+
+  # ── Identity ─────────────────────────────────────────────────────────
+  - type: textarea
+    id: user_identifiers
+    attributes:
+      label: Affected User(s)
+      description: Email addresses or user identifiers of affected users (if applicable)
+      placeholder: |
+        - user@example.com
+        - user2@company.com
+      render: text
+
+  # ── Evidence ─────────────────────────────────────────────────────────
+  - type: markdown
+    attributes:
+      value: |
+        ### Supporting Evidence
+        Attach screenshots, logs, or error messages that help illustrate the issue.
+
+  - type: textarea
+    id: screenshots_and_errors
+    attributes:
+      label: Screenshots / Error Messages
+      description: Paste screenshots or error messages. You can drag and drop images here.
+      placeholder: "Paste error messages, screenshots, or stack traces here"
+
+  - type: textarea
+    id: request_ids
+    attributes:
+      label: Request IDs / Correlation IDs
+      description: Any request IDs, correlation IDs, or trace IDs from logs
+      placeholder: |
+        Request ID: abc-123-def-456
+        Correlation ID: xyz-789
+        Datadog Trace: https://app.datadoghq.com/...
+      render: text
+
+  # ── Preliminary Analysis ─────────────────────────────────────────────
+  - type: markdown
+    attributes:
+      value: |
+        ### Preliminary Analysis
+        > **Before filing this issue**, we recommend checking your application's own logs and integrations first. 
+        > Issues are resolved faster when the reporter has done initial triage.
+
+  - type: checkboxes
+    id: preliminary_checks
+    attributes:
+      label: What has been checked so far?
+      description: Select all that apply
+      options:
+        - label: Checked application/browser console logs
+        - label: Checked Datadog / application monitoring dashboards
+        - label: Reviewed network calls (browser DevTools → Network tab)
+        - label: Verified the issue is not caused by our own application code
+        - label: Checked with our internal support team first
+        - label: Confirmed the issue exists across multiple browsers or devices
+        - label: This is a new issue — no prior investigation done
+
+  - type: textarea
+    id: analysis_details
+    attributes:
+      label: Analysis Details
+      description: |
+        If you performed any preliminary analysis, share your findings here.
+        Include: console logs, Datadog dashboard links, network call screenshots, 
+        error responses, or any evidence that points to CIAM services as the root cause.
+      placeholder: |
+        Example: 
+        - Checked browser network tab: the POST to /api/v1/users/activate returns 500
+        - Datadog shows increased error rate on User Service starting 14:00 UTC
+        - Our application code has not changed recently
+        - Other Okta-integrated apps are working fine
+
+  # ── Additional Context ──────────────────────────────────────────────
+  - type: textarea
+    id: additional_context
+    attributes:
+      label: Additional Context
+      description: Any other information that might help (recent changes, related issues, workarounds tried)

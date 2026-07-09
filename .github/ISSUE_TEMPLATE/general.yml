@@ -1,0 +1,92 @@
+name: "\U0001F4CB General Request"
+description: For requests that don't fit other templates — still captures structured triage data
+labels: ["triage-needed"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## General Request
+        Use this template when your request doesn't fit the other categories. 
+        Please fill in as much structured information as possible to help us triage quickly.
+
+  # ── Quick Classification ─────────────────────────────────────────────
+  - type: dropdown
+    id: request_type
+    attributes:
+      label: Request Type
+      description: What best describes your request?
+      options:
+        - Bug / Incident — Something is broken
+        - Question — I need help or guidance
+        - Configuration Change — Update an existing setup
+        - Access Request — Need access to a service or environment
+        - Data Request — Need data, reports, or logs
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: service
+    attributes:
+      label: Related Service(s) (if applicable)
+      description: Which CIAM service(s) is this about? Select all that apply.
+      multiple: true
+      options:
+        - User Services
+        - Okta
+        - Identity Portal
+        - Not CIAM-specific
+        - Not Sure
+
+  - type: checkboxes
+    id: environments
+    attributes:
+      label: Environment(s) (if applicable)
+      description: Select the relevant environment(s), or leave unchecked if not applicable
+      options:
+        - label: PROD
+        - label: STAGE
+        - label: DEV
+        - label: QA
+
+  # ── Request Details ──────────────────────────────────────────────────
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe Your Request
+      description: Provide a clear description of what you need
+      placeholder: |
+        Be as specific as possible. Include:
+        - What you're trying to accomplish
+        - What's happening (or not happening)
+        - Any relevant identifiers (app name, client ID, user email)
+    validations:
+      required: true
+
+  # ── Optional Context ─────────────────────────────────────────────────
+  - type: input
+    id: application_name
+    attributes:
+      label: Application Name (if applicable)
+      placeholder: "e.g. MyApp Portal"
+
+  - type: input
+    id: client_id
+    attributes:
+      label: Client ID (if applicable)
+      placeholder: "e.g. 0oa1abc2def3ghi4j5k6"
+
+  - type: dropdown
+    id: urgency
+    attributes:
+      label: Urgency
+      options:
+        - Normal — No rush
+        - Urgent — Needed soon, blocking work
+        - Critical — Production issue, immediate attention needed
+
+  - type: textarea
+    id: supporting_info
+    attributes:
+      label: Supporting Information
+      description: Screenshots, logs, error messages, links, or any other relevant details

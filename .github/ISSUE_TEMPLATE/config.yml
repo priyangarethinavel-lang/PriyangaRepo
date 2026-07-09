@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: "\U0001F4DA CIAM Documentation"
+    url: https://git.cglcloud.com/CIAM/Issues/wiki
+    about: Check the CIAM wiki for guides, FAQs, and naming conventions before opening an issue
+  - name: "\U0001F4AC Microsoft Teams — CIAM Support"
+    url: https://teams.microsoft.com/l/channel/19%3AJOql4yCvrDVHPMapQ4QXQrOzMBjN9W5jGaNaj0D3XDI1%40thread.tacv2/General?groupId=404fa35f-81ab-4e6f-9ada-44f516976a64&tenantId=57368c21-b8cf-42cf-bd0b-43ecd4bc62ae
+    about: For quick questions or live support, reach out on our Teams channel

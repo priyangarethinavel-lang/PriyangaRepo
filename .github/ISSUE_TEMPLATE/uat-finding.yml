@@ -1,0 +1,113 @@
+name: "\U0001F9EA UAT Finding"
+description: Report an issue found during User Acceptance Testing
+labels: ["uat"]
+title: "[UAT] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## UAT Finding
+        Report an issue discovered during User Acceptance Testing.
+
+  # ── Test Context ────────────────────────────────────────────────────
+  - type: input
+    id: feature_release
+    attributes:
+      label: Feature / Release Under Test
+      description: Which feature, story, or release is being tested?
+      placeholder: "e.g. PKCE Migration v2.0, Identity Portal Redesign Sprint 4"
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: environments
+    attributes:
+      label: Environment(s)
+      description: Where was this finding observed?
+      options:
+        - label: STAGE
+        - label: DEV
+        - label: QA
+    validations:
+      required: true
+
+  - type: dropdown
+    id: service
+    attributes:
+      label: Affected Service(s)
+      description: Which CIAM service(s) are involved? Select all that apply.
+      multiple: true
+      options:
+        - User Services
+        - Okta
+        - Identity Portal
+        - Not Sure
+    validations:
+      required: true
+
+  # ── Finding Details ─────────────────────────────────────────────────
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Finding Severity
+      description: How severe is this finding relative to the release?
+      options:
+        - Blocker — Cannot proceed with release
+        - Major — Significant issue, must fix before release
+        - Minor — Should fix, but not blocking
+        - Cosmetic — Visual or minor UX issue
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the Finding
+      description: What did you observe? What went wrong?
+      placeholder: |
+        Example: When testing the new user activation flow, clicking the 
+        "Activate Account" button returns a 500 error instead of proceeding 
+        to the password creation step.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps_to_reproduce
+    attributes:
+      label: Steps to Reproduce
+      description: Provide the exact steps to reproduce this finding
+      placeholder: |
+        1. Navigate to STAGE Identity Portal
+        2. Click the activation link from the test email
+        3. Enter the test user credentials
+        4. Click "Activate Account"
+        5. Observe 500 error
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected_vs_actual
+    attributes:
+      label: Expected vs Actual Behavior
+      placeholder: |
+        Expected: User should be redirected to password creation page
+        Actual: 500 Internal Server Error is displayed
+    validations:
+      required: true
+
+  # ── Evidence ────────────────────────────────────────────────────────
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots / Evidence
+      description: Drag and drop screenshots or paste error messages
+
+  - type: textarea
+    id: test_data
+    attributes:
+      label: Test Data Used
+      description: User accounts, URLs, or other test data used to reproduce
+      placeholder: |
+        Test user: testuser@staging.company.com
+        URL: https://identity-stage.company.com/activate?token=abc123
+      render: text

@@ -1,0 +1,91 @@
+name: "\U00002753 Question"
+description: Ask a question about CIAM services, integrations, or best practices
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Ask a Question
+        Provide context so we can give you an accurate and relevant answer quickly.
+
+  # ── Context ──────────────────────────────────────────────────────────
+  - type: dropdown
+    id: service
+    attributes:
+      label: Related Service(s)
+      description: Which CIAM service(s) does your question relate to? Select all that apply.
+      multiple: true
+      options:
+        - User Services
+        - Okta
+        - Identity Portal
+        - Not Sure
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: environments
+    attributes:
+      label: Environment(s) (if applicable)
+      description: Select the relevant environment(s), or leave unchecked for general questions
+      options:
+        - label: PROD
+        - label: STAGE
+        - label: DEV
+        - label: QA
+
+  - type: input
+    id: application_name
+    attributes:
+      label: Application Name (if applicable)
+      description: The name of your application, if your question is about a specific app
+      placeholder: "e.g. MyApp Portal, GPS"
+
+  # ── Question ─────────────────────────────────────────────────────────
+  - type: dropdown
+    id: question_type
+    attributes:
+      label: Question Type
+      description: What kind of question is this?
+      options:
+        - How-to — How do I do something?
+        - Integration — Connecting my app to a CIAM service
+        - Configuration — Settings, scopes, claims, redirect URIs
+        - Troubleshooting — Something isn't working as expected
+        - Best Practice — What's the recommended approach?
+        - Documentation — Where can I find information about X?
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Your Question
+      description: Describe your question with as much context as possible
+      placeholder: |
+        Example: We're migrating our SPA from implicit flow to PKCE. 
+        What changes do we need to make to our Okta application configuration, 
+        and do we need to update our redirect URIs?
+    validations:
+      required: true
+
+  # ── Context & Prior Research ─────────────────────────────────────────
+  - type: textarea
+    id: what_tried
+    attributes:
+      label: What have you already tried or reviewed?
+      description: |
+        Share any documentation you've read, configurations you've tried, 
+        or troubleshooting steps you've taken. This helps us avoid suggesting 
+        things you've already done.
+      placeholder: |
+        - Read the CIAM wiki on PKCE migration
+        - Tried updating the app type in Okta admin console
+        - Checked the OIDC configuration guide
+
+  - type: textarea
+    id: additional_context
+    attributes:
+      label: Additional Context
+      description: Any other details, screenshots, or references that might help

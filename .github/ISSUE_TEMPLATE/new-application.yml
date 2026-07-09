@@ -1,0 +1,158 @@
+name: "\U0001F195 New Application Request"
+description: Request a new application/client ID to be provisioned in CIAM
+labels: ["new-application"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## New Application / Client ID Request
+        Provide the details below so we can provision your application across the requested environments.
+        
+        > **Naming conventions:** Please follow the [group naming conventions](https://git.cglcloud.com/CIAM/Issues/wiki/Group-Management#naming-conventions) when specifying group names.
+
+  # ── Environment & Basics ─────────────────────────────────────────────
+  - type: checkboxes
+    id: environments
+    attributes:
+      label: Target Environment(s)
+      description: Select all environments where this application should be created
+      options:
+        - label: DEV
+        - label: STAGE
+        - label: PROD
+    validations:
+      required: true
+
+  - type: input
+    id: application_name
+    attributes:
+      label: Application Name
+      description: The display name for your application
+      placeholder: "e.g. MyApp Portal"
+    validations:
+      required: true
+
+  - type: textarea
+    id: application_purpose
+    attributes:
+      label: Application Purpose
+      description: Brief description of what this application does
+      placeholder: "e.g. Internal portal for managing customer onboarding workflows"
+    validations:
+      required: true
+
+  # ── Application Type ─────────────────────────────────────────────────
+  - type: dropdown
+    id: application_type
+    attributes:
+      label: Application Type
+      description: What type of application is this?
+      options:
+        - OIDC — Single Page Application (SPA)
+        - OIDC — Native / Mobile Application
+        - OIDC — Web Application (Server-side)
+        - SAML — Service Provider
+    validations:
+      required: true
+
+  # ── OIDC Configuration ──────────────────────────────────────────────
+  - type: markdown
+    attributes:
+      value: |
+        ### OIDC Configuration
+        *Complete this section for OIDC applications. Skip if SAML.*
+
+  - type: textarea
+    id: redirect_uris
+    attributes:
+      label: Sign-in Redirect URIs
+      description: One URI per line. Include all environments.
+      placeholder: |
+        https://myapp-dev.company.com/callback
+        https://myapp-stage.company.com/callback
+        https://myapp.company.com/callback
+        http://localhost:3000/callback
+      render: text
+
+  - type: textarea
+    id: logout_uris
+    attributes:
+      label: Sign-out Redirect URIs
+      description: Where should users be redirected after logout? One URI per line.
+      placeholder: |
+        https://myapp.company.com/
+        https://myapp-dev.company.com/
+      render: text
+
+  - type: checkboxes
+    id: grant_types
+    attributes:
+      label: Grant Types
+      description: Select the OAuth grant types your application needs
+      options:
+        - label: Authorization Code (with PKCE) — recommended for SPAs and native apps
+        - label: Authorization Code (without PKCE) — server-side web apps
+        - label: Client Credentials — service-to-service communication
+        - label: Implicit — legacy, not recommended
+
+  - type: textarea
+    id: scopes
+    attributes:
+      label: Required Scopes
+      description: What scopes does your application need?
+      placeholder: |
+        openid
+        profile
+        email
+        offline_access
+      render: text
+
+  # ── Groups & Access ──────────────────────────────────────────────────
+  - type: textarea
+    id: groups
+    attributes:
+      label: Groups / Roles
+      description: |
+        List the groups to be created. Follow [naming conventions](https://git.cglcloud.com/CIAM/Issues/wiki/Group-Management#naming-conventions).
+        One group per line with a brief description.
+      placeholder: |
+        MYAPP_USER — Standard application user
+        MYAPP_ADMIN — Application administrator
+        MYAPP_READONLY — Read-only access
+      render: text
+
+  # ── Service Account ─────────────────────────────────────────────────
+  - type: dropdown
+    id: needs_service_account
+    attributes:
+      label: Service Account Required?
+      description: Does your application need a service account for API token generation?
+      options:
+        - "Yes"
+        - "No"
+        - Not sure
+
+  - type: input
+    id: service_account_email
+    attributes:
+      label: Service Account Email (if yes)
+      description: The email address for the service account
+      placeholder: "e.g. svc-myapp@company.com"
+
+  # ── Identity Portal ─────────────────────────────────────────────────
+  - type: dropdown
+    id: identity_portal
+    attributes:
+      label: Identity Portal Integration
+      description: Should this application appear in the Identity Portal for user self-service?
+      options:
+        - "Yes — Users should be able to request access via Identity Portal"
+        - "No — Access will be managed through other channels"
+        - Not sure — Need to discuss
+
+  # ── Additional ──────────────────────────────────────────────────────
+  - type: textarea
+    id: additional_context
+    attributes:
+      label: Additional Context
+      description: Any other requirements, architecture diagrams, or constraints
