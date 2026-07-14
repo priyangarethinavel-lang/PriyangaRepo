@@ -13,63 +13,36 @@ jobs:
       - uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b  # v7
         with:
           script: |
-            // Issue Forms strip `type: markdown` blocks from the body, so we
-            // can't detect the template via body text. Instead we rely on the
-            // label(s) the form itself declares (e.g. labels: ["new-application"]).
-            const formLabels = (context.payload.issue.labels || []).map(l => l.name);
+            const body = context.payload.issue.body || '';
 
-            const knownTemplateLabels = new Set([
-              'bug',
-              'configuration-change',
-              'enhancement',
-              'triage-needed',
-              'group-role',
-              'new-application',
-              'question',
-              'service-account',
-              'uat',
-            ]);
+            const templateLabels = [
+              { marker: '## Report a Bug or Incident',             label: 'bug'                  },
+              { marker: '## Configuration Change Request',         label: 'configuration-change' },
+              { marker: '## Feature Request',                      label: 'enhancement'          },
+              { marker: '## General Request',                      label: 'triage-needed'        },
+              { marker: '## New Group / Role Request',             label: 'New Group/Role Request'           },
+              { marker: '## New Application / Client ID Request',  label: 'new-application'      },
+              { marker: '## Ask a Question',                       label: 'question'             },
+              { marker: '## Service Account Onboarding Request',   label: 'service-account'      },
+              { marker: '## UAT Finding',                          label: 'uat'                  },
+              { marker: '## FY26',                          label: 'fy26'                  },
+              { marker: '## FY27',                          label: 'fy27'                  },
 
-            const templateLabel = formLabels.find(name => knownTemplateLabels.has(name));
-            if (!templateLabel) {
-              core.info('No known template label present on issue — skipping.');
+            ];
+
+            const match = templateLabels.find(t => body.includes(t.marker));
+            if (!match) {
+              core.info('No matching template found — skipping label.');
               return;
             }
 
             const fyLabel = `FY${String(new Date().getFullYear()).slice(-2)}`;
-            const labelsToApply = [templateLabel, fyLabel];
-
-            // Ensure each label exists in the repo; create it if missing.
-            // addLabels() 422s if any label is unknown, and issue-form labels
-            // are silently dropped when they don't exist yet.
-            for (const name of labelsToApply) {
-              try {
-                await github.rest.issues.getLabel({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  name,
-                });
-              } catch (err) {
-                if (err.status === 404) {
-                  await github.rest.issues.createLabel({
-                    owner: context.repo.owner,
-                    repo: context.repo.repo,
-                    name,
-                    color: 'ededed',
-                    description: 'Auto-created by auto-label-issues workflow',
-                  });
-                  core.info(`Created missing label "${name}".`);
-                } else {
-                  throw err;
-                }
-              }
-            }
 
             await github.rest.issues.addLabels({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              labels: labelsToApply,
+              labels: [match.label, fyLabel],
             });
 
-            core.info(`Applied labels "${templateLabel}", "${fyLabel}" to issue #${context.issue.number}`);
+            core.info(`Applied labels "${match.label}", "${fyLabel}" to issue #${context.issue.number}`);
