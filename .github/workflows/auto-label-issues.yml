@@ -13,9 +13,9 @@ jobs:
       - uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b  # v7
         with:
           script: |
-            // Issue Forms strip `type: markdown` blocks from the body, so we
-            // can't detect the template via body text. Instead we rely on the
-            // label(s) the form itself declares (e.g. labels: ["new-application"]).
+            // ---------- 1. Detect template label ----------
+            // Strategy A: Issue Forms declare labels in the form YAML — read
+            // them from the issue payload.
             const formLabels = (context.payload.issue.labels || []).map(l => l.name);
 
             const knownTemplateLabels = new Set([
@@ -30,14 +30,41 @@ jobs:
               'uat',
             ]);
 
-            const templateLabel = formLabels.find(name => knownTemplateLabels.has(name));
+            let templateLabel = formLabels.find(name => knownTemplateLabels.has(name));
+
+            // Strategy B (fallback): scan the issue body for a marker heading.
+            // Useful when the template is a plain markdown template (no form
+            // labels) or when form labels were dropped.
             if (!templateLabel) {
-              core.info('No known template label present on issue — skipping.');
-              return;
+              const body = context.payload.issue.body || '';
+              const bodyMarkers = [
+                { marker: /^##\s*Report a Bug or Incident/mi,        label: 'bug' },
+                { marker: /^##\s*Configuration Change Request/mi,    label: 'configuration-change' },
+                { marker: /^##\s*Feature Request/mi,                 label: 'enhancement' },
+                { marker: /^##\s*Group\s*\/\s*Role Request/mi,       label: 'group-role' },
+                { marker: /^##\s*New Application Onboarding/mi,      label: 'new-application' },
+                { marker: /^##\s*Question/mi,                        label: 'question' },
+                { marker: /^##\s*Service Account Request/mi,         label: 'service-account' },
+                { marker: /^##\s*UAT (?:Request|Sign[- ]?off)/mi,    label: 'uat' },
+              ];
+              const hit = bodyMarkers.find(({ marker }) => marker.test(body));
+              if (hit) {
+                templateLabel = hit.label;
+                core.info(`Detected template "${templateLabel}" via body marker.`);
+              }
+            } else {
+              core.info(`Detected template "${templateLabel}" via form labels.`);
             }
 
+            // ---------- 2. Always compute the fiscal-year label ----------
             const fyLabel = `FY${String(new Date().getFullYear()).slice(-2)}`;
-            const labelsToApply = [templateLabel, fyLabel];
+
+            // Apply FY label even if no template matched, so issues are still
+            // tagged with the year.
+            const labelsToApply = templateLabel ? [templateLabel, fyLabel] : [fyLabel];
+            if (!templateLabel) {
+              core.info('No template label detected — applying FY label only.');
+            }
 
             // Ensure each label exists in the repo; create it if missing.
             // addLabels() 422s if any label is unknown, and issue-form labels
@@ -72,4 +99,4 @@ jobs:
               labels: labelsToApply,
             });
 
-            core.info(`Applied labels "${templateLabel}", "${fyLabel}" to issue #${context.issue.number}`);
+            core.info(`Applied labels ${labelsToApply.map(l => `"${l}"`).join(', ')} to issue #${context.issue.number}`);
